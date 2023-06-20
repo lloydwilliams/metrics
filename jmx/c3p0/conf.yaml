@@ -1,0 +1,27 @@
+init_config:
+instances:
+  - jvm_direct: true
+    name: c3p0
+    conf:
+      - include:
+          domain: com.mchange.v2.c3p0 
+          bean_regex: com.mchange.v2.c3p0:type=PooledDataSource,identityToken=([^,]*),name=([^,]*)
+          attribute:
+            numConnections:
+              alias: c3p0.num.connections
+              metric_type: monotonic_count
+            numConnectionsAllUsers:
+              alias: c3p0.num.connections.all_users
+              metric_type: monotonic_count
+            numConnectionsDefaultUser:
+              alias: c3p0.num.connections.default_user
+              metric_type: monotonic_count
+            numBusyConnections:
+              alias: c3p0.num.busy.connections
+              metric_type: monotonic_count
+            numIdleConnections:
+              alias: c3p0.num.idle.connections
+              metric_type: monotonic_count
+            numUnclosedOrphaned:
+              alias: c3p0.num.unclosed.orphaned
+              metric_type: monotonic_count
