@@ -1,6 +1,6 @@
 # JMX
 
-If you are going to use the JMX integration (with the Datadog Agent) you need to open the JMX port for Tomcat:
+For Tomcat, if you are going to use the JMX integration (with the Datadog Agent) you need to open the JMX port for Tomcat:
 
 ```
 -Dcom.sun.management.jmxremote \
@@ -24,7 +24,7 @@ export DD_JMXFETCH_TOMCAT_ENABLED=true
 
 since the Datadog jmxfetch logic and the default `tomcat.d/metrics.yaml` is pre-bundled into the `dd-java-agent.jar`
 
-If you need a custom JMX metrics file, with APM enabled, you can just specify it like this:
+If you need a custom JMX metrics file (for example c3p0 connection pool monitoring is not supported out-of-the-box, but has JMX metrics available) with APM enabled, you can just specify it like this:
 
 ```
 -Ddd.jmxfetch.config=/Users/lloyd.williams/u01/jmx/c3p0/conf3.yaml"
@@ -104,7 +104,7 @@ Catalina:J2EEApplication=none,J2EEServer=none,WebModule=//localhost/,j2eeType=Fi
 Catalina:J2EEApplication=none,J2EEServer=none,WebModule=//localhost/,j2eeType=Servlet,name=default
 Catalina:J2EEApplication=none,J2EEServer=none,WebModule=//localhost/,j2eeType=Servlet,name=jsp
 Catalina:J2EEApplication=none,J2EEServer=none,WebModule=//localhost/,name=jsp,type=JspMonitor
-
+Catalina:J2EEApplication=none,J2EEServer=none,WebModule=//localhost/examples,j2eeType=Servlet,name=HelloWorldExample
 Catalina:type=UtilityExecutor
 $>bean Catalina:J2EEApplication=none,J2EEServer=none,WebModule=//localhost/examples,j2eeType=Servlet,name=HelloWorldExample
 #bean is set to Catalina:J2EEApplication=none,J2EEServer=none,WebModule=//localhost/examples,j2eeType=Servlet,name=HelloWorldExample
@@ -152,11 +152,17 @@ $>info
 
 
 
-Be careful jmxterm says this was the ObjectName string:
+Be careful for c3p0, jmxterm says this was the ObjectName string:
+
+``` 
+com.mchange.v2.c3p0:identityToken=z8kfltax2amw0v1ei1cf|7a56f8c,name=z8kfltax2amw0v1ei1cf|7a56f8c,type=PooledDataSource
+```
+
+But in JConsole it's like this (with type=PooledDataSource after the domain name):
 
 ``` com.mchange.v2.c3p0:type=PooledDataSource,identityToken=z8kfltax2amw0v1ei1cf|7a56f8c,name=z8kfltax2amw0v1ei1cf|7a56f8cSo```
 
- I needed regex like this: 
+So I needed a bean_regex expression like this: 
 
 ```
 com.mchange.v2.c3p0:type=PooledDataSource,identityToken=([^,]*),name=([^,]*)
@@ -165,3 +171,20 @@ com.mchange.v2.c3p0:type=PooledDataSource,identityToken=([^,]*),name=([^,]*)
 Also, don’t expect the metrics to show up right away in Datadog, it actually takes a minute or so. But when it works they will show up with tags.
 
 ![datadog-c3p0-metrics](images/datadog-c3p0-metrics.png)
+
+Also see these helpful links:
+
+https://docs.datadoghq.com/integrations/faq/view-jmx-data-in-jconsole-and-set-up-your-jmx-yaml-to-collect-them/
+
+https://docs.datadoghq.com/integrations/java/?tab=host
+
+https://www.datadoghq.com/blog/easy-jmx-discovery-browsing-open-source-agent/
+
+Java APM with jmxfetch included:
+
+https://docs.datadoghq.com/tracing/trace_collection/library_config/java/#ddjmxfetchconfigdir-and-ddjmxfetchconfig
+
+Creating an entirely new integration:
+
+https://docs.datadoghq.com/developers/guide/creating-a-jmx-integration/
+
