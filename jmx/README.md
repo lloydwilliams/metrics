@@ -76,9 +76,9 @@ java -jar jmxterm-1.0.4-uber.jar --url localhost:9012
 then you can use the commands:
 
 - domains
-- domain <one of the domain names that it listed>
+- domain  (with one of the domain names that it listed)
 - beans
-- bean <one of the beans that it listed>
+- bean  (with one of the beans that it listed)
 - info
 
 For example:
@@ -180,9 +180,15 @@ https://docs.datadoghq.com/integrations/java/?tab=host
 
 https://www.datadoghq.com/blog/easy-jmx-discovery-browsing-open-source-agent/
 
+https://docs.datadoghq.com/integrations/tomcat/?tab=host
+
 Java APM with jmxfetch included:
 
 https://docs.datadoghq.com/tracing/trace_collection/library_config/java/#ddjmxfetchconfigdir-and-ddjmxfetchconfig
+
+APM Tomcat Windows:
+
+https://docs.google.com/presentation/d/1XF_79gmAoeuZksHo9CNnbmiafI-829U1FJvBjCbVEkI/edit#slide=id.ge2520ceeed_0_26
 
 Creating an entirely new integration:
 
