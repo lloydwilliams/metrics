@@ -22,20 +22,23 @@ then you can specify that you want the Tomcat default metrics in addition to the
 export DD_JMXFETCH_TOMCAT_ENABLED=true
 ```
 
-since the Datadog jmxfetch logic and the default tomcat.d/metrics.yaml is pre-bundled into the dd-java-agent.jar.if you need a custom JMX metrics file, with APM enabled, you can just specify it like this:
+since the Datadog jmxfetch logic and the default `tomcat.d/metrics.yaml` is pre-bundled into the `dd-java-agent.jar`
+
+If you need a custom JMX metrics file, with APM enabled, you can just specify it like this:
 
 ```
 -Ddd.jmxfetch.config=/Users/lloyd.williams/u01/jmx/c3p0/conf3.yaml"
 ```
 
-or this way:
+or this way (but not both):
 
 ```
 export DD_JMXFETCH_CONFIG=/Users/lloyd.williams/u01/jmx/c3p0/conf3.yaml
 ```
 
 If the metric that the customer is looking to get has a configured or random part of the name in it, you may have to use `bean_regex`
-For example,
+
+For example:
 
 ```
 com.mchange.v2.c3p0:type=PooledDataSource,identityToken=z8kfltax2amw0v1ei1cf|7a56f8c,name=z8kfltax2amw0v1ei1cf|7a56f8c
@@ -47,12 +50,19 @@ bean_regex:
 com.mchange.v2.c3p0:type=PooledDataSource,identityToken=([^,]*),name=([^,]*)
 ```
 
-*I believe ([^,]\*) means anything that doesn’t match a comma.*
-You can test these on https://regexr.com/
+Here's a [sample](https://github.com/lloydwilliams/metrics/blob/main/jmx/c3p0/conf.yaml)
+
+Notice that when you use the approach leveraging APM that you need to specify:
+
+```
+jvm_direct: true
+```
+
+You can test the bean regex expressions against the ObjectNames from JConsole with a regex testing tool (e.g. https://regexr.com/)
 
 ![Jconsole-example](images/Jconsole-example.png)
 
-Regex
+Regex Testing
 
 ![Regex101-example](images/Regex101-example.png)
 
